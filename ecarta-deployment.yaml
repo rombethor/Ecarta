@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecarta-deployment
+  namespace: ecarta
+  labels:
+    app: ecarta
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ecarta
+  template:
+    metadata:
+      labels:
+        app: ecarta
+    spec:
+      containers:
+      - name: ecarta
+        image: hub.docker.io/rombethor/ecarta
+        ports:
+        - containerPort: 80
+        env:
+        - name: rabbithost
+          value: abc
+        - name: rabbituser
+          valueFrom:
+            secretKeyRef:
+              name: ecarta-secret
+              key: rabbituser
+        - name: rabbitpass
+          valueFrom:
+            secretKeyRef:
+              name: ecarta-secret
+              key: rabbitpass
+        - name: fromname
+          value: Ecarta
+        - name: fromaddress
+          value: ecarta@djt.mx
+        - name: emailhost
+          value: djt.mx
+        - name: emailport
+          value: djt.mx
+        - name: emailuser
+          valueFrom:
+            secretKeyRef:
+              name: ecarta-secret
+              key: emailuser
+        - name: emailpass
+          valueFrom:
+            secretKeyRef:
+              name: ecarta-secret
+              key: emailpass
+---
+apiVersion: v1
+data:
+  rabbituser: ""
+  rabbitpass: ""
+  emailuser: ""
+  emailpass: ""
